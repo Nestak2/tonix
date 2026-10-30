@@ -10,6 +10,20 @@ Self-citations (citing works by you or by a co-author of the cited paper) are
 left out, as Sonix asks ("Моля, не описвайте автоцитирания!"). They are listed
 in `self_citations_left_out.csv` so you can check them.
 
+## Background and credit
+
+tonix2 is a Python rewrite and extension of **tonix**, the original Ruby script by
+M. Stoilov (INRNE-BAS) that fills in the Sonix citation form from BibTeX files.
+The idea, and the way of driving the Sonix forms through a browser, come from that
+tool. The original script, with its instructions, is still available at
+http://theo.inrne.bas.bg/~mstoilov/sci_sec
+
+What tonix2 adds: it finds the papers in ORCID, finds the citations itself in INSPIRE,
+NASA ADS and OpenAlex instead of reading BibTeX files, compares everything with what
+Sonix already has, and has a local web interface with a review step before anything is
+saved. If you only need to enter citations you already have as BibTeX files, the
+original is simpler and may suit you better.
+
 ## Install
 
 1. Install Python 3.10 or newer from https://www.python.org/downloads/
@@ -184,3 +198,7 @@ test runs the real form-filling code with Playwright, if it is installed.
 | `tonix2/fmt.py` | citation text in the MLA format the Sonix form asks for |
 | `tonix2/http.py` | retries, throttling, cache |
 | `tonix2/sonix/` | Sonix pages: reading (`parse.py`), matching (`match.py`), browser (`browser.py`), filling forms (`client.py`) |
+
+## License
+
+MIT, see the file `LICENSE`. Copyright (c) 2026 Nestor Arsenov.
