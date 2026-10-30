@@ -201,4 +201,4 @@ test runs the real form-filling code with Playwright, if it is installed.
 
 ## License
 
-MIT, see the file `LICENSE`. Copyright (c) 2026 Nestor Arsenov.
+MIT, see the file `LICENSE`
