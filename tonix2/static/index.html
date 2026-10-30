@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tonix: papers and citations for Sonix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="word">tonix</span>
+    <span class="tag">papers and citations for Sonix</span>
+  </div>
+  <ol class="rail" id="rail" aria-label="Progress">
+    <li data-step="start"><span class="n">1</span><span class="s">Sign in</span></li>
+    <li data-step="papers"><span class="n">2</span><span class="s">Papers</span></li>
+    <li data-step="citations"><span class="n">3</span><span class="s">Citations</span></li>
+    <li data-step="save"><span class="n">4</span><span class="s">Save</span></li>
+    <li data-step="summary"><span class="n">5</span><span class="s">Summary</span></li>
+  </ol>
+</header>
+
+<main>
+  <section id="busy" class="busy" hidden role="status" aria-live="polite">
+    <p class="busy-label" id="busy-label">Working…</p>
+    <progress id="busy-bar" max="1" value="0"></progress>
+    <p class="busy-count" id="busy-count"></p>
+  </section>
+
+  <p id="flash" class="flash" hidden role="alert"></p>
+
+  <!-- 1 ---------------------------------------------------------------- -->
+  <section id="view-start" class="view">
+    <h1>Sign in</h1>
+    <p class="lede">Enter your ORCID iD and your Sonix login. Nothing is saved to Sonix until you confirm it on the Save step.
+      Passwords, tokens and keys stay in this program’s memory and are never written to disk.</p>
+    <form id="start-form" novalidate>
+      <fieldset>
+        <legend>You</legend>
+        <label>ORCID iD
+          <input name="orcid" required autocomplete="off" placeholder="0000-0002-1825-0097" inputmode="text">
+        </label>
+        <label>Year you joined your current BAS unit <span class="opt">optional</span>
+          <input name="joined_year" inputmode="numeric" maxlength="4" placeholder="2021">
+          <small>Papers from before that year start with “In unit report” unticked.</small>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Sonix login</legend>
+        <p class="hint">Used to see what Sonix already has and to save new entries. Leave both empty to only review.</p>
+        <div class="pair">
+          <label>Email <input name="sonix_email" type="email" autocomplete="username"></label>
+          <label>Password <input name="sonix_password" type="password" autocomplete="current-password"></label>
+        </div>
+        <div class="pair">
+          <label>Browser for Sonix
+            <select name="browser"><option value="firefox">Firefox</option><option value="chrome">Chrome</option></select>
+          </label>
+          <label class="check inline"><input type="checkbox" name="show_browser"> Show the browser window while it works</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Citation sources</legend>
+        <p class="hint">INSPIRE is always used and needs no key.</p>
+        <label>NASA ADS token <span class="opt">optional</span>
+          <input name="ads_token" type="password" autocomplete="off" id="ads-input">
+          <small id="ads-note">Without a token, ADS is skipped.</small>
+        </label>
+        <label>OpenAlex API key <span class="opt">optional</span>
+          <input name="openalex_key" type="password" autocomplete="off" id="oa-input">
+          <small id="oa-note">Without a key OpenAlex allows only a small amount of use per day. A free key from openalex.org/settings/api gives ten times more.</small>
+        </label>
+        <label>Contact email for the databases <span class="opt">optional</span>
+          <input name="contact_email" type="email" autocomplete="email">
+          <small>Sent to OpenAlex and in request headers so the services can reach you if something goes wrong.</small>
+        </label>
+        <p class="hint" id="scimago-note"></p>
+      </fieldset>
+
+      <label class="check"><input type="checkbox" name="refresh"> Download everything again instead of using results from the last 24 hours</label>
+
+      <div class="actions">
+        <button type="submit" class="primary">Find my papers</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- 2 ---------------------------------------------------------------- -->
+  <section id="view-papers" class="view" hidden>
+    <h1>Your papers</h1>
+    <p class="lede" id="papers-lede"></p>
+    <div class="toolbar">
+      <button type="button" data-bulk="published">Tick all published papers</button>
+      <button type="button" data-bulk="none">Untick all</button>
+    </div>
+    <div class="scroll">
+      <table class="papers">
+        <thead id="papers-head"></thead>
+        <tbody id="papers-body"></tbody>
+      </table>
+    </div>
+    <div class="actions">
+      <button type="button" class="primary" id="go-citations">Find citations</button>
+      <button type="button" id="back-start">Start over</button>
+    </div>
+  </section>
+
+  <!-- 3 ---------------------------------------------------------------- -->
+  <section id="view-citations" class="view" hidden>
+    <h1>Citations</h1>
+    <p class="lede" id="cites-lede"></p>
+    <div class="toolbar">
+      <button type="button" data-cbulk="all">Tick everything</button>
+      <button type="button" data-cbulk="none">Untick everything</button>
+    </div>
+    <div id="cites-body"></div>
+    <div class="actions">
+      <button type="button" class="primary" id="go-save">Continue</button>
+      <button type="button" id="back-papers">Back to papers</button>
+    </div>
+  </section>
+
+  <!-- 4 ---------------------------------------------------------------- -->
+  <section id="view-save" class="view" hidden>
+    <h1>Save to Sonix</h1>
+    <p class="lede" id="save-lede"></p>
+    <div id="save-body"></div>
+    <div class="actions">
+      <button type="button" class="primary" id="do-save">Save to Sonix</button>
+      <button type="button" id="skip-save">Finish without saving</button>
+      <button type="button" id="back-cites">Back to citations</button>
+    </div>
+  </section>
+
+  <!-- 5 ---------------------------------------------------------------- -->
+  <section id="view-summary" class="view" hidden>
+    <h1>Summary</h1>
+    <p class="lede" id="sum-lede"></p>
+    <div id="sum-body"></div>
+    <div class="actions">
+      <button type="button" id="again">Start over</button>
+      <button type="button" id="quit">Close tonix</button>
+    </div>
+  </section>
+
+  <details class="log" id="log">
+    <summary>Activity log <span id="log-warn"></span></summary>
+    <ol id="log-lines"></ol>
+  </details>
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>

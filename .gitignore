@@ -1,0 +1,9 @@
+.cache/
+output/
+__pycache__/
+*.pyc
+.pytest_cache/
+.pytest_out/
+data/*.csv
+# Saved Sonix pages contain personal data (colleagues' names, session tokens): never publish them
+tests/fixtures/*.html
